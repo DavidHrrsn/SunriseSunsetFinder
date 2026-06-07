@@ -28,3 +28,13 @@ bin/
 .project
 .classpath
 .settings/
+
+# IntelliJ files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VSCode files
+.vscode/
+
