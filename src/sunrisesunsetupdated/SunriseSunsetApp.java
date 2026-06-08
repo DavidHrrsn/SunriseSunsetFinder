@@ -13,6 +13,28 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
+/**
+ * SunriseSunsetApp.java
+ *
+ * Main JavaFX application for the Sunrise/Sunset Time Finder project.
+ * This class provides the graphical user interface used to collect
+ * location and date information from the user, invoke backend services,
+ * and display calculated sunrise and sunset results.
+ *
+ * The application integrates geocoding, timezone lookup, and local
+ * solar calculations to provide accurate sunrise and sunset times
+ * for locations around the world.
+ *
+ * CMSC 495 Capstone Project
+ * Project: Sunrise/Sunset Time Finder
+ *
+ * @author David Harrison
+ * @author Samuel Garmoe
+ * @author Apurva Dave
+ * @author Jeremy Ross
+ * @author Jeremy Briggs
+ * @version 1.0
+ */
 public class SunriseSunsetApp extends Application {
 
     private VBox resultsSection;
@@ -22,6 +44,11 @@ public class SunriseSunsetApp extends Application {
     private ComboBox<String> countryBox;
     private DatePicker datePicker;
 
+    /**
+     * Initializes and displays the JavaFX user interface.
+     *
+     * @param stage Primary application window.
+     */
     @Override
     public void start(Stage stage) {
 
@@ -177,6 +204,14 @@ public class SunriseSunsetApp extends Application {
         stage.show();
     }
 
+    /**
+     * Creates the results display section after a successful calculation.
+     *
+     * @param location Geocoded location information.
+     * @param result Calculated sunrise and sunset results.
+     * @param zoneId Timezone associated with the location.
+     * @return Fully populated results display container.
+     */
     private VBox buildDynamicResultsSection(
             LocationResult location,
             SunriseSunsetResult result,
@@ -275,6 +310,16 @@ public class SunriseSunsetApp extends Application {
         return resultsCard;
     }
 
+    /**
+     * Creates an individual result display box containing an icon,
+     * label, and value.
+     *
+     * @param iconFile Image file used as the icon.
+     * @param label Descriptive label for the result.
+     * @param value Value to display.
+     * @param valueClass CSS style class applied to the value.
+     * @return Styled result display box.
+     */
     private VBox createResultBox(
             String iconFile,
             String label,
@@ -303,6 +348,14 @@ public class SunriseSunsetApp extends Application {
         return box;
     }
 
+    /**
+     * Creates a styled text input row consisting of an icon and
+     * text field.
+     *
+     * @param iconFile Image used as the row icon.
+     * @param field Text field associated with the input.
+     * @return Configured input row.
+     */
     private HBox createInputRow(String iconFile, TextField field) {
 
         HBox row = new HBox(8);
@@ -318,6 +371,14 @@ public class SunriseSunsetApp extends Application {
         return row;
     }
 
+    /**
+     * Creates a styled combo box row consisting of an icon and
+     * selectable dropdown field.
+     *
+     * @param iconFile Image used as the row icon.
+     * @param comboBox ComboBox used for user selection.
+     * @return Configured combo box row.
+     */
     private HBox createComboRow(
             String iconFile,
             ComboBox<String> comboBox
@@ -336,6 +397,13 @@ public class SunriseSunsetApp extends Application {
         return row;
     }
 
+    /**
+     * Loads and formats an icon image for display within the UI.
+     *
+     * @param fileName Image resource file name.
+     * @param size Desired icon size in pixels.
+     * @return Configured ImageView object.
+     */
     private ImageView createIcon(String fileName, int size) {
 
         ImageView icon = new ImageView(loadImage(fileName));
@@ -347,6 +415,12 @@ public class SunriseSunsetApp extends Application {
         return icon;
     }
 
+    /**
+     * Loads an image resource from the application's resources folder.
+     *
+     * @param fileName Name of the image resource.
+     * @return Loaded Image object.
+     */
     private Image loadImage(String fileName) {
 
         return new Image(
@@ -356,6 +430,14 @@ public class SunriseSunsetApp extends Application {
         );
     }
 
+    /**
+     * Processes user input and displays sunrise and sunset results.
+     *
+     * This method validates user input, constructs a location query,
+     * retrieves geographic coordinates, determines the appropriate
+     * timezone, performs sunrise/sunset calculations, and updates
+     * the results section of the interface.
+     */
     private void showResults() {
 
         try {
@@ -364,6 +446,7 @@ public class SunriseSunsetApp extends Application {
             String state = stateField.getText().trim();
             String country = getCountryValue();
 
+            // Validate required location information.
             if (city.isEmpty() || country.isEmpty()) {
 
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -376,6 +459,7 @@ public class SunriseSunsetApp extends Application {
                 return;
             }
 
+            // Build a complete address string for geocoding.
             StringBuilder addressBuilder = new StringBuilder();
 
             if (!street.isEmpty()) {
@@ -392,19 +476,23 @@ public class SunriseSunsetApp extends Application {
 
             String address = addressBuilder.toString();
 
+            // Initialize backend services.
             GeocodingService geocodingService = new GeocodingService();
             TimeZoneService timeZoneService = new TimeZoneService();
             SolarCalculator solarCalculator = new SolarCalculator();
 
+            // Retrieve coordinates from the geocoding service.
             LocationResult location =
                     geocodingService.getLocationFromAddress(address);
 
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
 
+            // Determine the timezone associated with the coordinates.
             ZoneId zoneId =
                     timeZoneService.getTimeZone(latitude, longitude);
 
+            // Calculate sunrise and sunset times for the selected date.
             SunriseSunsetResult result =
                     solarCalculator.calculateSunriseSunset(
                             latitude,
@@ -413,6 +501,7 @@ public class SunriseSunsetApp extends Application {
                             zoneId
                     );
 
+            // Replace any previous results with the newly calculated values.
             resultsSection.getChildren().clear();
 
             resultsSection.getChildren().add(
@@ -428,6 +517,7 @@ public class SunriseSunsetApp extends Application {
 
         } catch (Exception ex) {
 
+            // Display an error dialog if processing fails.
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Unable to calculate sunrise/sunset.");
@@ -438,6 +528,11 @@ public class SunriseSunsetApp extends Application {
         }
     }
 
+    /**
+     * Retrieves the country value entered or selected by the user.
+     *
+     * @return Country value entered by the user.
+     */
     private String getCountryValue() {
 
         if (countryBox.getEditor() != null
@@ -453,6 +548,10 @@ public class SunriseSunsetApp extends Application {
         return "";
     }
 
+    /**
+     * Restores all user input fields to their default state and
+     * clears any displayed results.
+     */
     private void resetForm() {
 
         streetField.clear();
@@ -467,6 +566,11 @@ public class SunriseSunsetApp extends Application {
         resultsSection.setManaged(false);
     }
 
+    /**
+     * Launches the JavaFX application.
+     *
+     * @param args Command-line arguments.
+     */
     public static void main(String[] args) {
         launch();
     }
