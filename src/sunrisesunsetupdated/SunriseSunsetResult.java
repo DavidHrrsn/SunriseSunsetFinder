@@ -1,35 +1,68 @@
 package sunrisesunsetupdated;
+
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-/*
- * SunriseSunsetResult
- * -------------------
- * Stores and formats sunrise/sunset information.
+/**
+ * SunriseSunsetResult.java
+ *
+ * Stores the results of a sunrise and sunset calculation, including
+ * the location coordinates, requested date, sunrise time, sunset time,
+ * and total day length. The class also provides methods to format
+ * the calculated values for display within the application.
+ *
+ * CMSC 495 Capstone Project
+ * Project: Sunrise/Sunset Time Finder
+ *
+ * @author David Harrison
+ * @author Samuel Garmoe
+ * @author Apurva Dave
+ * @author Jeremy Ross
+ * @author Jeremy Briggs
+ * @version 1.0
  */
 public class SunriseSunsetResult {
 
-    // Latitude used in request
+    /**
+     * Latitude used for the sunrise/sunset calculation.
+     */
     private final double latitude;
 
-    // Longitude used in request
+    /**
+     * Longitude used for the sunrise/sunset calculation.
+     */
     private final double longitude;
 
-    // Requested date
+    /**
+     * Date for which sunrise and sunset information was calculated.
+     */
     private final LocalDate date;
 
-    // Local sunrise time
+    /**
+     * Calculated local sunrise time.
+     */
     private final ZonedDateTime sunrise;
 
-    // Local sunset time
+    /**
+     * Calculated local sunset time.
+     */
     private final ZonedDateTime sunset;
 
-    // Day length in seconds
+    /**
+     * Length of daylight in seconds.
+     */
     private final String dayLength;
 
-    /*
-     * Constructor
+    /**
+     * Constructs a SunriseSunsetResult object containing calculation results.
+     *
+     * @param latitude Latitude used in the calculation.
+     * @param longitude Longitude used in the calculation.
+     * @param date Date for which the calculation was performed.
+     * @param sunrise Calculated local sunrise time.
+     * @param sunset Calculated local sunset time.
+     * @param dayLength Length of daylight in seconds.
      */
     public SunriseSunsetResult(
             double latitude,
@@ -48,8 +81,10 @@ public class SunriseSunsetResult {
         this.dayLength = dayLength;
     }
 
-    /*
-     * Returns formatted sunrise time.
+    /**
+     * Returns the sunrise time formatted for user display.
+     *
+     * @return Sunrise time in hh:mm a z format.
      */
     public String getFormattedSunrise() {
 
@@ -60,8 +95,10 @@ public class SunriseSunsetResult {
         );
     }
 
-    /*
-     * Returns formatted sunset time.
+    /**
+     * Returns the sunset time formatted for user display.
+     *
+     * @return Sunset time in hh:mm a z format.
      */
     public String getFormattedSunset() {
 
@@ -72,8 +109,11 @@ public class SunriseSunsetResult {
         );
     }
 
-    /*
-     * Converts seconds into HH:MM:SS format.
+    /**
+     * Converts the stored daylight duration from seconds into
+     * a human-readable HH:MM:SS format.
+     *
+     * @return Formatted day length string.
      */
     public String getFormattedDayLength() {
 
@@ -97,8 +137,10 @@ public class SunriseSunsetResult {
         );
     }
 
-    /*
-     * Returns formatted result information.
+    /**
+     * Returns a formatted summary of the sunrise and sunset results.
+     *
+     * @return Multi-line string containing calculation details.
      */
     @Override
     public String toString() {
